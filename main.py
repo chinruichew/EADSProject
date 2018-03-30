@@ -36,11 +36,20 @@ def fetch_data():
                 values.append(value)
                 import_items.append(values)
 
-    print(export_items)
-    print(import_items)
+    # print(export_items)
+    # print(import_items)
+
+def extract_delivery_data():
+    for item in export_items:
+        for index, value in enumerate(item):
+            if index == 30:
+                volume = value
+            elif index == 31:
+                weight = value
 
 def parse_data():
     fetch_data()
+    extract_delivery_data()
 
 # Data Pre-processing
 parse_data()
