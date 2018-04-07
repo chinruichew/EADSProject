@@ -56,7 +56,7 @@ def route_distance(route):
 		prev = node
 	return dist
 
-def print_results(route, filename, time, startnode):
+def print_results(route, filename, parsing_time, opt_time):
 	"""
 	prints the nodes in the final route and route information
 	route - route to print
@@ -69,10 +69,9 @@ def print_results(route, filename, time, startnode):
 	print(-1)
 	print("Original input file : " + filename)
 	print("Dimension : " + str(len(route)))
-	if startnode:
-		print("Randomized start node : " + str(startnode))
 	print("Total Distance : " + str(route_distance(route)))
-	print("Time to run 2opt : %.2f seconds" % time)
+	print("Time to parse data : %.2f seconds" % parsing_time)
+	print("Time to run 2opt : %.2f seconds" % opt_time)
 
 def swap_2opt(route, i, k):
 	"""
@@ -136,20 +135,19 @@ def parse_input_route(filename):
 		coords = get_coords(line)
 		if coords != None:
 		    route.append(Node(coords))
-		print(coords)
+		# print(coords)
 	f.close()
 
 	return route
 
 # Parse input file
+parse_start = default_timer()
 filename = 'data/coords.txt'
 route = parse_input_route(filename)
-
-# Configurations
-r = None
+parse_end = default_timer()
 
 # Run 2opt
 start = default_timer()
 route = run_2opt(route)
 end = default_timer()
-print_results(route, filename, (end - start), r)
+print_results(route, filename, (parse_end - parse_start), (end - start))
