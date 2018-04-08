@@ -1,7 +1,6 @@
-from sys import argv
 from math import hypot
 from timeit import default_timer
-from random import randrange
+import googlemaps
 
 class Node:
 	"""
@@ -9,8 +8,10 @@ class Node:
 	"""
 	def __init__(self, coords):
 		self.num = coords[0] # start position in a route's order
-		self.x = coords[1]   # x coordinate
-		self.y = coords[2]   # y coordinate
+		self.x = coords[1]   # x coordinate/Lat
+		self.y = coords[2]   # y coordinate/Lng
+		self.key = 'AIzaSyCUglL7I7KhZY_7Ei2jJiGTA-10uqrJ-RE'
+		self.client = googlemaps.Client(self.key)
 
 	def __str__(self):
 		"""
@@ -25,6 +26,13 @@ class Node:
 		dx = self.x - other.x
 		dy = self.y - other.y
 		return hypot(dx, dy)
+
+	def google_dist(self, other):
+		origins = [{'lat': other.x, 'lng': other.y}]
+		destinations = [{'lat': self.x, 'lng': self.y}]
+		matrix = self.client.distance_matrix(origins, destinations)
+		element = matrix['rows'][0]['elements'][0]
+		return float(element['distance']['text'][:len(element['distance']['text']) - 3])
 
 def get_coords(line):
 	"""
@@ -52,7 +60,7 @@ def route_distance(route):
 	# print(route)
 	for node in route:
 		# print(node)
-		dist += node.euclidean_dist(prev)
+		dist += node.google_dist(prev)
 		prev = node
 	return dist
 
